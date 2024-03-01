@@ -1,0 +1,10 @@
+# normal
+SECRET_KEY=
+
+
+# database develop
+DB_USER=
+DB_PWD=
+DB_HOST=
+DB_PORT=
+DB_NAME=
