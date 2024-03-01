@@ -1,0 +1,108 @@
+// app global css in SCSS form
+body {
+  font-size: 15px;
+  color: $dark
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.button {
+  height: 50px;
+  margin-left: 0;
+  width: 100%;
+}
+
+.q-menu {
+  border-radius: 20px;
+}
+
+.q-card__actions {
+  padding: 0;
+}
+
+.q-card__section {
+  padding: 0;
+}
+
+.q-dialog__inner {
+  padding: 12px;
+  > div {
+    border-radius: 16px !important;
+  }
+}
+
+.q-item {
+  &:hover {
+    background: rgb(0,0,0, 0.04);
+    > .q-focus-helper {
+      background: none !important;
+      opacity: 0 !important;
+      &:after,
+      &:before {
+        background: none !important;
+        opacity: 0 !important;
+      }
+    }
+  }
+}
+
+.q-select {
+  .q-field__inner {
+    .q-field__control {
+      min-height: 0;
+      height: 100%;
+      padding: 0 8px 0 15px;
+      &-container {
+        padding: 0 !important;
+        .q-field__native {
+          min-height: 0;
+          height: 100%;
+        }
+      }
+      .q-field__append {
+        min-height: 0;
+        height: 100%;
+      }
+    }
+  }
+}
+
+.q-scrollarea__thumb {
+  display: none;
+}
+
+.page-header {
+  height: 50px;
+  position: sticky;
+  top: 0;
+  left: 56px;
+  z-index: 99;
+  border-radius: 0;
+  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0 16px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 50px;
+}
+
+.btn-menu {
+  .q-list {
+    .q-item {
+      min-height: 0;
+    }
+  }
+}
+
+.q-card {
+  border-radius: 16px;
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: 800;
+  padding: 16px 16px 12px;
+}
