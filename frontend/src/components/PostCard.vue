@@ -17,15 +17,10 @@
           <span class="title q-mr-xs" @click.stop="goProfile">{{ name }}</span>
           <span class="desc">{{ email }} ∙ {{ created }}</span>
         </div>
-        <q-btn flat dense round :ripple="false" icon="more_horiz" size="sm" color="grey-8" class="more-btn" @click.stop>
-          <q-menu class="btn-menu" v-if="user.id === user_id">
-            <q-list>
-              <q-item clickable @click="onDeletePost">
-                <q-item-section class="text-negative">Delete</q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
+        <PostMenuButton
+          :post_user_id="user_id"
+          @delete:post="$emit('delete:post')"
+        />
       </div>
       <div class="content-container">
         <div class="tweet">{{ tweet }}</div>
@@ -64,7 +59,7 @@
 </template>
 
 <script>
-import { reactive, watch } from 'vue';
+import { watch } from 'vue';
 import { Dialog, Cookies, useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import { api } from "@boot/axios";
@@ -76,8 +71,8 @@ import {
   roundIosShare,
 } from "@quasar/extras/material-icons-round";
 import { tweetFunctionButtons } from '@constants/tweet.js';
-import ConfirmDialog from '@components/common/ConfirmDialog.vue';
 import TweetImgsDialog from '@components/common/TweetImgsDialog.vue';
+import PostMenuButton from '@components/common/PostMenuButton.vue';
 
 const buttons = [
   { title: "Reply", label: 10, icon: roundComment, color: "primary" },
@@ -88,6 +83,7 @@ const buttons = [
 
 export default {
   name: "PostCard",
+  components: { PostMenuButton },
   props: {
     idx: Number,
     id: {
@@ -97,6 +93,7 @@ export default {
     user_id: {
       type: Number,
       default: null,
+      required: true,
     },
     name: {
       type: String,
@@ -183,23 +180,6 @@ export default {
       })
     }
 
-
-    function onDeletePost() {
-      Dialog.create({
-        component: ConfirmDialog,
-        componentProps: {
-          title: 'Delete tweet?',
-          desc: 'This can’t be undone and it will be removed from your profile, the timeline of any accounts that follow you, and from Twitter search results.',
-          firstBtnLabel: 'Delete',
-          firstBtnColor: 'negative',
-          secondBtnLabel: 'Cancel'
-        }
-      }).onOk(() => {
-        emit("delete");
-      })
-
-    }
-
     return {
       roundComment,
       roundCached,
@@ -213,7 +193,6 @@ export default {
       goProfile,
       onClickLike,
       tweetImgsDialog,
-      onDeletePost,
 
       tweetFunctionButtons,
     };
@@ -223,7 +202,7 @@ export default {
 
 <style lang="scss">
 .post-card {
-  padding: 20px 16px 16px;
+  padding: 12px 16px 16px;
   border-bottom: 1px solid rgb(239, 243, 244);
   position: relative;
   > .q-item__section {

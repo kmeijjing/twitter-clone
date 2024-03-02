@@ -2,7 +2,9 @@
   <q-page class="home-page flex row no-wrap" @wheel="onWheel">
     <div class="page-container full-width">
       <div class="page-header">
-        Home
+        <div class="title">
+          Home
+        </div>
       </div>
 
       <AddPostCard @success="addPostSuccess" class="q-mt-md" />

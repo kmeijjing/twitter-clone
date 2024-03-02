@@ -11,11 +11,13 @@
           class="close-btn"
           @click="onDialogCancel"
         />
-        <strong>Edit profile</strong>
+        <div class="title">Edit profile</div>
         <q-btn
           rounded
+          no-caps
+          unelevated
           color="black"
-          label="save"
+          label="Save"
           class="save-btn"
           @click="saveUserInfo(userInfo)"
         />
@@ -25,8 +27,16 @@
         <q-card-section class="profile-card-container" flat>
           <div class="photo-section">
             <div class="bg-image">
-              <q-img v-if="userInfo.bgImage" :src="`bgImgs/${userInfo.id}/${userInfo.bgImage}`" style="height: 180px" />
-              <q-img v-else :src="bgImageSrc" style="height: 180px" />
+              <q-img
+                v-if="userInfo.bgImage"
+                :src="`bgImgs/${userInfo.user_id}/${userInfo.bgImage}`"
+                style="height: 180px"
+              />
+              <q-img
+                v-else
+                :src="bgImageSrc"
+                style="height: 180px"
+              />
               <div class="edit-bg-image">
                 <q-icon name="add_a_photo" color="grey-1" />
                 <q-file
@@ -36,14 +46,19 @@
                   accept="image/*"
                   :max-file-size="2097152"
                   :max-files="1"
+                  class="cursor-pointer"
                   @update:modelValue="updateBgImage"
                 />
               </div>
             </div>
+            {{ profileImageVal }}
             <div class="profile-image">
               <q-avatar>
-                <img v-if="userInfo.profileImage" :src="`profileImgs/${userInfo.id}/${userInfo.profileImage}`" />
-                <img v-else :src="profileImageSrc" />
+                <img
+                  :src="userInfo.profileImage
+                    ? `profileImgs/${userInfo.user_id}/${userInfo.profileImage}`
+                    : profileImageSrc"
+                />
               </q-avatar>
               <div class="edit-profile-image">
                 <q-icon name="add_a_photo" color="grey-1" />
@@ -54,6 +69,7 @@
                   accept="image/*"
                   :max-file-size="2097152"
                   :max-files="1"
+                  class="cursor-pointer"
                   @update:modelValue="updateProfileImage"
                 />
               </div>
@@ -113,6 +129,7 @@
 <script>
 import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import { api } from "@boot/axios"
 
 export default {
   components: {},
@@ -124,7 +141,7 @@ export default {
       useDialogPluginComponent();
 
     const userInfo = ref({
-      id: props.user.id,
+      user_id: props.user.id,
       name: props.user.name,
       bio: props.user.bio,
       location: props.user.location,
@@ -159,7 +176,31 @@ export default {
       reader.readAsDataURL(val);
     }
 
-    function saveUserInfo(val) {
+    function saveUserInfo(userInfo) {
+      const formData = new FormData();
+      if (bgImageVal.value) formData.append('bgFile', bgImageVal.value);
+      if (profileImageVal.value) formData.append('profileFile', profileImageVal.value);
+      if (userInfo.birth === 'None') {
+        formData.append("birth", '');
+      } else {
+        formData.append("birth", userInfo.birth);
+      }
+
+      formData.append("user_id", userInfo.user_id);
+      formData.append("name", userInfo.name);
+      formData.append("bio", userInfo.bio || '');
+      formData.append("location", userInfo.location || '');
+      formData.append("website", userInfo.website || '');
+      formData.append("bg_image", userInfo.bgImage || '');
+      formData.append("profile_image", userInfo.profileImage || '');
+
+      api.post("/user", formData, { header: { "Content-Type": "multipart/form-data" }, })
+        .then(() => {
+          onDialogOK();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
 
     return {
@@ -198,10 +239,15 @@ export default {
         top: 0;
         left: 0;
         padding: 0 12px;
+        .title {
+          font-size: 20px;
+          font-weight: 700;
+        }
         .close-btn {
           margin-right: 12px;
         }
         .save-btn {
+          height: 30px;
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
@@ -237,7 +283,6 @@ export default {
                     .q-field {
                       width: 100%;
                       height: 100%;
-                      cursor: pointer;
                       &__inner {
                         .q-field__control {
                           height: 100%;
@@ -253,6 +298,7 @@ export default {
                 }
                 .profile-image {
                   position: relative;
+
                   .q-avatar {
                     width: 120px;
                     height: 120px;
@@ -262,6 +308,9 @@ export default {
                     background: white;
                     &__content {
                       border: 3px solid white;
+                    }
+                    img {
+                      object-fit: cover;
                     }
                   }
                   .edit-profile-image {
@@ -306,7 +355,6 @@ export default {
                 padding: 12px;
                 .q-field {
                   margin-bottom: 12px;
-                  // height: 40px;
                   &:last-of-type {
                     margin-bottom: 0;
                   }

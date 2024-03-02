@@ -1,6 +1,8 @@
 export const tabOptions = [
-  { name: "Tweets", value: "tweets" },
-  { name: "Tweets&replies", value: "tweets&replies" },
+  { name: "Posts", value: "posts" },
+  { name: "Replies", value: "replies" },
+  { name: "Highlights", value: "highlights" },
+  { name: "Articles", value: "articles" },
   { name: "Media", value: "media" },
   { name: "Likes", value: "likes" },
 ];

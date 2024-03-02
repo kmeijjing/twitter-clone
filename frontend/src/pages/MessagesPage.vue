@@ -1,8 +1,10 @@
 <template>
   <q-page class="messages-page flex no-wrap">
     <div class="left-section">
-      <div class="page-header flex no-wrap items-center justify-between">
-        Messages
+      <div class="page-header justify-between">
+        <div class="title">
+          Messages
+        </div>
         <div>
           <q-btn flat dense round :ripple="false" :icon="outlinedSettings" color="grey-9" class="q-mr-sm" />
           <q-btn flat dense round :ripple="false" :icon="outlinedSend" color="grey-9" @click="newMsgDialog" />

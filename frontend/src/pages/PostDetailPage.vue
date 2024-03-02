@@ -11,7 +11,7 @@
           class="q-mr-md"
           @click="$router.go(-1)"
         />
-        <strong>Post</strong>
+        <div class="title">Post</div>
       </div>
 
       <PostCard

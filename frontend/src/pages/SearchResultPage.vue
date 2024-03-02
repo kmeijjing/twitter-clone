@@ -28,8 +28,8 @@
       <q-card flat class="search-result-card-container">
         <q-card-section v-if="!postListArr.length" class="no-data">
           <div>
-            <div class="title">No results for<br />"{{ keyword }}"</div>
-            <div class="desc">
+            <div class="title">No results for "{{ keyword }}"</div>
+            <div class="desc text-grey-8">
               Try searching for something else, or check your Search settings to see if they’re protecting you from potentially sensitive content.
             </div>
           </div>
@@ -54,21 +54,6 @@
             @delete="onDeletePost(i)"
           />
         </q-list>
-        <q-card-section>
-          <div>People</div>
-          <!-- <follow-component
-            v-for="(p, i) in people"
-            :key="p.id"
-            :idx="i"
-            :id="p.id"
-            :name="p.name"
-            :email="p.email"
-            :bio="p.bio"
-            :profile_image="p.profile_image"
-            :following="p.following"
-            @updateFollow="updateFollow(i)"
-          /> -->
-        </q-card-section>
       </q-card>
     </div>
 
@@ -81,7 +66,6 @@ import { ref, onBeforeMount } from "vue";
 import { Loading, Cookies } from "quasar";
 import { api } from "@boot/axios";
 import { useRoute } from "vue-router";
-// import FollowComponent from "@components/FollowComponent.vue";
 import SearchForm from "@components/SearchForm.vue";
 import PostCard from "@components/PostCard.vue";
 import RightSideBar from "@layouts/RightSideBar.vue";
@@ -179,10 +163,6 @@ export default {
       onSearch(val);
     }
 
-    function updateFollow(idx) {
-      people.value[idx].following = !people.value[idx].following;
-    }
-
     onBeforeMount(() => {
       keyword.value = route.params.keyword;
       onSearch(keyword.value);
@@ -200,7 +180,6 @@ export default {
       onSearch,
       onUpdatelike,
       onDeletePost,
-      updateFollow,
     };
   },
 };
@@ -213,18 +192,19 @@ export default {
     padding: 0 0 20px;
     border-right: 1px solid rgb(239, 243, 244);
     .search-result-card-container {
-      // .no-data {
-      //   width: 275px;
-      //   margin: 0 auto;
-      //   padding: 30px 0;
-      //   white-space: pre-line;
-      //   word-break: keep-all;
-      //   .title {
-      //     font-size: 26px;
-      //     margin-bottom: 10px;
-      //     line-height: 34px;
-      //   }
-      // }
+      .no-data {
+        width: 330px;
+        margin: 0 auto;
+        padding: 30px 0;
+        white-space: pre-line;
+        word-break: keep-all;
+        .title {
+          font-size: 31px;
+          font-weight: 800;
+          margin-bottom: 10px;
+          line-height: 34px;
+        }
+      }
     }
   }
 }

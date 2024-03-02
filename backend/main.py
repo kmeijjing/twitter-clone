@@ -81,18 +81,16 @@ def get_user(user_id):
 
 
 def update_user(user):
-
     return app.database.execute(text(f"""
         UPDATE users
         SET
         name='{user['name']}',
-        bio='{user['bio']}',
-        location='{user['location']}',
-        website='{user['website']}',
-        birth='{user['birth']}',
-        bg_image='{user['bg_image']}',
-        profile_image='{user['profile_image']}'
-        
+        bio = CASE WHEN '{user['bio']}' = '' THEN NULL ELSE '{user['bio']}' END,
+        location = CASE WHEN '{user['location']}' = '' THEN NULL ELSE '{user['location']}' END,
+        website = CASE WHEN '{user['website']}' = '' THEN NULL ELSE '{user['website']}' END,
+        birth = CASE WHEN '{user['birth']}' = '' THEN NULL ELSE '{user['birth']}' END,
+        bg_image = CASE WHEN '{user['bg_image']}' = '' THEN NULL ELSE '{user['bg_image']}' END,
+        profile_image = CASE WHEN '{user['profile_image']}' = '' THEN NULL ELSE '{user['profile_image']}' END
         WHERE user_id = {int(user['user_id'])}
     """))
 
@@ -565,10 +563,10 @@ def user(user_id):
 @login_required
 def edit_user():
     user_info = request.form.to_dict()
-    user_id = user_info['id']
+    user_id = user_info['user_id']
 
     if request.files.get('bgFile'):
-        bg_uploads_dir = f'../client/public/bgImgs/{user_id}'
+        bg_uploads_dir = f'../frontend/public/bgImgs/{user_id}'
 
         if os.path.exists(bg_uploads_dir):
             shutil.rmtree(bg_uploads_dir)
@@ -584,9 +582,8 @@ def edit_user():
         file.save(os.path.join(bg_uploads_dir, new_name))
         user_info['bg_image'] = new_name
 
-
     if request.files.get('profileFile'):
-        profile_uploads_dir = f'../client/public/profileImgs/{user_id}'
+        profile_uploads_dir = f'../frontend/public/profileImgs/{user_id}'
 
         if os.path.exists(profile_uploads_dir):
             shutil.rmtree(profile_uploads_dir)
@@ -602,7 +599,6 @@ def edit_user():
         file.save(os.path.join(profile_uploads_dir, new_name))
         user_info['profile_image'] = new_name
 
-
     update_user(user_info)
 
     return '', 200
@@ -617,7 +613,7 @@ def post_tweet():
     filenames = ""
 
     if request.files.get('file'):
-        uploads_dir = '../client/public/uploads'
+        uploads_dir = '../frontend/public/uploads'
         os.makedirs(uploads_dir, exist_ok=True)
 
         for file in request.files.getlist('file'):
@@ -645,7 +641,7 @@ def tweet(tweet_id, user_id):
         return jsonify(get_tweet(tweet_id, user_id))
 
     if request.method == 'DELETE':
-        path = '../client/public/uploads/'
+        path = '../frontend/public/uploads/'
         files = get_tweet(tweet_id, user_id)
 
         # if files['uploads']:
