@@ -4,6 +4,9 @@ const routes = [
   {
     path: "/auth",
     component: () => import("layouts/AuthLayout.vue"),
+    meta: {
+      unauthenticated: true,
+    },
     children: [
       {
         path: "",
@@ -25,6 +28,9 @@ const routes = [
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
+    meta: {
+      authenticated: true,
+    },
     children: [
       {
         path: "",
