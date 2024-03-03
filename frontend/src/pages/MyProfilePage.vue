@@ -14,60 +14,15 @@
 
         <div>
           <div class="title">{{ user.name }}</div>
-          <div class="subtitle" style="font-size: 13px">{{ myTimeline.length || 0 }} Post</div>
+          <div class="subtitle" style="font-size: 13px">{{ user.posts.length || 0}} Post</div>
         </div>
       </div>
 
-      <q-card class="profile-card" flat square>
-        <q-card-section class="bg-photo-section bg-grey-4" style="height: 200px">
-          <q-img
-            v-if="user.bg_image"
-            :src="`bgImgs/${myId}/${user.bg_image}`"
-            style="height: 200px"
-          />
-        </q-card-section>
-
-        <q-card-section class="profile-info-section">
-          <div class="flex justify-end">
-            <div class="profile-img">
-              <q-avatar class="bg-grey-4" size="145px">
-                <img v-if="user.profile_image" :src="`profileImgs/${myId}/${user.profile_image}`" />
-                <q-icon name="person" color="grey-6" size="90px" />
-              </q-avatar>
-            </div>
-            <q-btn
-              outline
-              rounded
-              no-caps
-              label="Edit Profile"
-              color="dark"
-              size="md"
-              class="edit-btn"
-              :ripple="false"
-              @click="editProfileDialog"
-            />
-          </div>
-          <div style="margin-top: 24px">
-            <div class="text-bold name">{{ user.name }}</div>
-            <div class="email q-pb-sm">{{ user.email }}</div>
-            <div class="bio q-mt-sm">{{ user.bio }}</div>
-            <div class="created flex row items-center q-my-sm">
-              <q-icon name="calendar_month" />
-              <span>Joined {{ user.created_at }}</span>
-            </div>
-            <div class="follow">
-              <span class="q-mr-md">
-                <strong class="q-pr-xs">{{ follows.followings.length }}</strong>
-                <span>Following</span>
-              </span>
-              <span>
-                <strong class="q-pr-xs">{{ follows.followers.length }} </strong>
-                <span> Followers</span>
-              </span>
-            </div>
-          </div>
-        </q-card-section>
-      </q-card>
+      <ProfileInfoCard
+        :user="user"
+        :follows="follows"
+        @update:user="getUser"
+      />
 
       <div class="tabs-container">
         <q-tabs
@@ -112,18 +67,20 @@ import { ref, onBeforeMount } from "vue";
 import { Dialog, Cookies } from "quasar";
 import { api } from "@boot/axios";
 import { tabOptions } from "@constants/profile.js";
-import EditProfileDialog from "@components/profile/EditProfileDialog.vue";
+import ProfileInfoCard from "src/components/profile/ProfileInfoCard.vue";
 import RightSideBar from "@layouts/RightSideBar.vue";
 import PostTabContent from '@components/profile/PostTabContent.vue';
 
 export default {
   name: 'ProfilePage',
-  components: { PostTabContent, RightSideBar },
+  components: { ProfileInfoCard, PostTabContent, RightSideBar },
   setup() {
     const myId = Cookies.get('user').id;
     const tab = ref('Posts');
 
-    const user = ref({});
+    const user = ref({
+      posts: [],
+    });
     const follows = ref({
       followings: [],
       followers: [],
@@ -133,24 +90,6 @@ export default {
         .get(`/user/${myId}`)
         .then((res) => {
           user.value = res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-
-    const myTimeline = ref([]);
-    function getMyTimeline() {
-      api
-        .get(`/my-timeline/${myId}`)
-        .then((res) => {
-          myTimeline.value = res.data.timeline.reverse();
-          myTimeline.value.forEach((t) => {
-            if (t.uploads) {
-              t.uploads = t.uploads.split(" ");
-              t.uploads.pop();
-            }
-          })
         })
         .catch((err) => {
           console.log(err);
@@ -169,21 +108,8 @@ export default {
         });
     }
 
-    function editProfileDialog() {
-      Dialog.create({
-        component: EditProfileDialog,
-        componentProps: {
-          user: user.value,
-        },
-        persistent: true,
-      }).onOk(() => {
-        getUser();
-      });
-    }
-
     onBeforeMount(() => {
       getUser();
-      getMyTimeline();
       getFollow();
     });
 
@@ -194,9 +120,7 @@ export default {
       tab,
       user,
       follows,
-      myTimeline,
-
-      editProfileDialog,
+      getUser,
     };
   },
 };

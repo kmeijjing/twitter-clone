@@ -67,9 +67,9 @@ export default {
         const screenHeight = $q.screen.height;
         const containerHeight = containerRef.value.offsetHeight;
         const topPosition  = props.isSearchBar ? '60px' : '12px';
-        console.log(containerRef)
-        console.log('screenHeight : ', screenHeight);
-        console.log('containerHeight : ', containerHeight);
+        // console.log(containerRef)
+        // console.log('screenHeight : ', screenHeight);
+        // console.log('containerHeight : ', containerHeight);
         containerRef.value.style.top = screenHeight >= containerHeight ? topPosition : `-${containerHeight - screenHeight + 100}px`;
 
         console.log(containerRef.value.style.top);
@@ -118,12 +118,12 @@ export default {
       background: $grey-1;
     }
   }
-  &.right-side-bar--search {
-    > .container {
-      // top: 60px;
-      top: -300px;
-    }
-  }
+  // &.right-side-bar--search {
+  //   > .container {
+  //     // top: 60px;
+  //     top: -300px;
+  //   }
+  // }
   // &.right-side-bar--no-search {
   //   > .container {
   //     top: 12px;

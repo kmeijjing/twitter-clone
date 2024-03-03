@@ -1,13 +1,14 @@
 <template>
   <q-item
-    clickable
+    :clickable="isClickable"
     class="post-card flex items-start justify-between"
+    :class="{ 'unclickable-post-card': !isClickable }"
     @click.stop="router.push(`/post/${id}`)"
   >
     <q-item-section avatar>
       <q-avatar class="bg-grey-4" size="44px">
         <q-icon v-if="!profile_image" round color="grey-6" size="30px" name="person" @click.stop="goProfile" />
-        <q-img v-else :src="`profileImgs/${user_id}/${profile_image}`" @click.stop="goProfile" />
+        <q-img v-else :src="`profileImgs/${user_id}/${profile_image}`" height="100%" @click.stop="goProfile" />
       </q-avatar>
     </q-item-section>
 
@@ -23,7 +24,7 @@
         />
       </div>
       <div class="content-container">
-        <div class="tweet">{{ tweet }}</div>
+        <div class="post">{{ tweet }}</div>
         <div v-if="!!uploads" class="imgs" :class="`imgs-${uploads.length}`">
           <q-img
             v-for="(upload, i) in uploads"
@@ -51,7 +52,6 @@
           :label="Number(like_count).toLocaleString()"
           @click.stop="onClickLike"
         />
-
         <q-btn flat dense round :ripple="false" color="grey-8" icon="far fa-share-square" class="share-btn" />
       </div>
     </q-item-section>
@@ -93,7 +93,6 @@ export default {
     user_id: {
       type: Number,
       default: null,
-      required: true,
     },
     name: {
       type: String,
@@ -129,6 +128,10 @@ export default {
       type: [Array, String],
       default: null,
     },
+    isClickable: {
+      type: Boolean,
+      default: true,
+    }
   },
   setup(props, { emit }) {
     const router = useRouter();
@@ -136,9 +139,9 @@ export default {
 
     function goProfile() {
       if (props.user_id === user.id) {
-        router.push("/profile");
+        router.push({ name: 'MyProfile'});
       } else {
-        router.push(`/user?u=${props.user_id}`);
+        router.push({ name: 'OtherProfile', params: { userId: props.user_id }});
       }
     }
 
@@ -205,6 +208,11 @@ export default {
   padding: 12px 16px 16px;
   border-bottom: 1px solid rgb(239, 243, 244);
   position: relative;
+  &.unclickable-post-card {
+    &:hover {
+      background: none;
+    }
+  }
   > .q-item__section {
     &.q-item__section--avatar {
       padding-right: 12px;
@@ -222,7 +230,7 @@ export default {
       }
     }
     .content-container {
-      .tweet {
+      .post {
         font-size: 16px;
       }
       .imgs {

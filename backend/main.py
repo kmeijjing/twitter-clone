@@ -65,6 +65,8 @@ def get_user(user_id):
         WHERE user_id = {user_id}
     """)).fetchone()
 
+    timeline = get_my_timeline(user_id)
+
     return {
         'id': user_id,
         'name': user['name'],
@@ -76,7 +78,8 @@ def get_user(user_id):
         'bg_image': user['bg_image'],
         'profile_image': user['profile_image'],
         'created_at': str(user['created_at']),
-        'updated_at': str(user['updated_at'])
+        'updated_at': str(user['updated_at']),
+        'posts': timeline,
     } if user else None
 
 
@@ -155,7 +158,6 @@ def get_tweet(tweet_id, user_id):
         'profile_image': tweet['profile_image'],
         'like': True if tweet['tweet_id'] else False
     } if tweet else None
-
 
 
 def delete_tweet(tweet_id):
@@ -248,6 +250,7 @@ def get_timeline(user_id, keyword):
                 ON u.user_id = t.user_id
                 WHERE t.tweet LIKE '%{keyword}%'
                 OR t.user_id = ufl.follow_user_id
+                ORDER BY t.created_at DESC
             """)).fetchall()
 
     else:
@@ -273,6 +276,7 @@ def get_timeline(user_id, keyword):
         ON u.user_id = t.user_id
         WHERE t.user_id = {user_id}
         OR t.user_id = ufl.follow_user_id
+        ORDER BY t.created_at DESC
     """)).fetchall()
 
     return [{
@@ -307,6 +311,7 @@ def get_my_timeline(user_id):
         LEFT JOIN likes l
         ON l.tweet_id = t.id
         WHERE t.user_id = {user_id}
+        ORDER BY t.created_at DESC
     """)).fetchall()
 
     return [{
@@ -544,6 +549,7 @@ def login():
             'access_token': token,
             'user': {
                 'id': user['id'],
+                'name': user['name'],
                 'email': user['email']
             }
         })

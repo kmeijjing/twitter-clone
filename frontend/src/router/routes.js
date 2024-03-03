@@ -53,7 +53,13 @@ const routes = [
       },
       {
         path: "profile",
-        component: () => import("src/pages/ProfilePage.vue")
+        name: "MyProfile",
+        component: () => import("src/pages/MyProfilePage.vue")
+      },
+      {
+        path: "profile/:userId",
+        name: "OtherProfile",
+        component: () => import("src/pages/OtherProfilePage.vue")
       },
       {
         path: "trends",
@@ -65,7 +71,6 @@ const routes = [
         name: "Search",
         component: () => import("src/pages/SearchResultPage.vue")
       },
-      // { path: "user", component: () => import("src/pages/others/UserProfile.vue") },
       {
         path: "post/:id",
         name: "Post",

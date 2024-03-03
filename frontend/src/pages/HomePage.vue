@@ -26,7 +26,7 @@
             :key="t.id"
             :idx="i"
             :id="t.id"
-            :user_id="t.user_ids"
+            :user_id="t.user_id"
             :name="t.name"
             :email="t.email"
             :profile_image="t.profile_image"
@@ -68,7 +68,7 @@ export default {
         keyword: ''
 ,      }
       api.get('/timeline', { params }).then((res) => {
-        postListArr.value = res.data.timeline.reverse();
+        postListArr.value = res.data.timeline;
         postListArr.value.forEach((t) => {
           if (t.uploads) {
             t.uploads = t.uploads.split(" ");

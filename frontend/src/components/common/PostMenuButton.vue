@@ -35,7 +35,7 @@ export default {
   props: {
     post_user_id: {
       type: Number,
-      required: true,
+      default: null,
     },
   },
   setup(_, { emit }) {

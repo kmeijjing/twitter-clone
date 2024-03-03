@@ -16,7 +16,7 @@
 
       <PostCard
         :id="post.id"
-        :account_id="post.account_id"
+        :user_id="post.user_id"
         :name="post.name"
         :email="post.email"
         :profile_image="post.profile_image"
@@ -25,6 +25,7 @@
         :like="post.like"
         :like_count="post.like_count"
         :uploads="post.uploads"
+        :isClickable="false"
         @update:like="onUpdateLike"
       />
 
@@ -105,7 +106,6 @@ export default {
 
     const post = ref({
       id: null,
-      user_id: null,
       content: '',
       created_at: '',
       like_count: 0,

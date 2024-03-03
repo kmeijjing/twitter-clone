@@ -51,7 +51,6 @@
                 />
               </div>
             </div>
-            {{ profileImageVal }}
             <div class="profile-image">
               <q-avatar>
                 <img

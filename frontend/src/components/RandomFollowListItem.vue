@@ -1,8 +1,16 @@
 <template>
-  <q-item clickable class="random-follow-list-item">
+  <q-item
+    clickable
+    class="random-follow-list-item"
+    @click.stop="$router.push({
+      name: 'OtherProfile',
+      params: { userId: id },
+    })"
+    exact
+  >
     <q-item-section avatar>
       <q-avatar class="bg-grey-4" size="40px">
-        <q-img v-if="profile_image" :src="`profileImgs/${id}/${profile_image}`" />
+        <q-img v-if="profile_image" :src="`profileImgs/${id}/${profile_image}`" height="100%" />
         <q-icon v-else name="person" color="grey-6" size="30px" />
       </q-avatar>
     </q-item-section>
@@ -15,14 +23,14 @@
 
     <q-item-section side>
       <q-btn
-        v-if="!following"
+        v-if="!isFollowing"
         dense
         rounded
         no-caps
         unelevated
         label="Follow"
         color="black"
-        @click="clickFollow"
+        @click.stop="clickFollow"
       />
       <q-btn
         v-else
@@ -33,7 +41,7 @@
         unelevated
         :label="unfollowBtn ? 'Unfollow' : 'Following'"
         :color="unfollowBtn ? 'red-7' : 'grey-5'"
-        @click="clickUnfollow"
+        @click.stop="clickUnfollow"
         @mouseenter="unfollowBtn = true"
         @mouseleave="unfollowBtn = false"
         class="following-btn bg-white"
@@ -46,6 +54,7 @@
 <script>
 import { ref } from "vue";
 import { Dialog, Cookies } from "quasar";
+import { useRouter } from "vue-router";
 import { api } from "@boot/axios";
 import ConfirmDialog from "@components/common/ConfirmDialog.vue";
 
@@ -79,7 +88,7 @@ export default {
   },
   setup(props) {
     const user = Cookies.get('user');
-    const following = ref(false);
+    const isFollowing = ref(false);
     const unfollowBtn = ref(false);
 
     function clickFollow() {
@@ -90,7 +99,7 @@ export default {
       api
         .post("/follow", param)
         .then(() => {
-          following.value = true;
+          isFollowing.value = true;
         })
         .catch((err) => {
           console.log(err);
@@ -115,7 +124,7 @@ export default {
         api
           .post("/unfollow", param)
           .then(() => {
-            following.value = false;
+            isFollowing.value = false;
           })
           .catch((err) => {
             console.log(err);
@@ -124,7 +133,7 @@ export default {
     }
 
     return {
-      following,
+      isFollowing,
       unfollowBtn,
       clickFollow,
       clickUnfollow,
