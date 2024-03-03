@@ -12,6 +12,7 @@
         <q-item
           v-for="(menu) in postMenu"
           :key="menu.title"
+          clickable
         >
           <q-item-section side>
             <q-icon :name="menu.icon" size="18px" color="dark" />

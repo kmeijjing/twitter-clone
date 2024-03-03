@@ -12,33 +12,39 @@
       <q-separator class="q-mt-md" style="background: rgb(239, 243, 244)" />
 
       <q-card flat>
-        <q-card-section v-if="!postListArr.length">
-          <div class="text-center text-grey-8 q-py-xl">
-            <div class="text-h6">No Post</div>
-            <div class="text-subtitle1">
-              포스트가 없습니다.
+        <q-card-section>
+          <q-list>
+            <PostCard
+              v-for="(t, i) in postListArr"
+              :key="t.id"
+              :idx="i"
+              :id="t.id"
+              :user_id="t.user_id"
+              :name="t.name"
+              :email="t.email"
+              :profile_image="t.profile_image"
+              :created="t.created_at"
+              :tweet="t.tweet"
+              :like="t.like"
+              :like_count="t.like_count"
+              :uploads="t.uploads"
+              @update:like="onUpdatelike(i)"
+              @delete:post="onDeletePost(i)"
+            />
+            <div v-if="!postListArr.length && !isLoading" class="text-center text-grey-8 q-py-xl">
+              <div class="text-h6">No Post</div>
+              <div class="text-subtitle1">
+                포스트가 없습니다.
+              </div>
             </div>
-          </div>
+          </q-list>
         </q-card-section>
-        <q-list v-else>
-          <PostCard
-            v-for="(t, i) in postListArr"
-            :key="t.id"
-            :idx="i"
-            :id="t.id"
-            :user_id="t.user_id"
-            :name="t.name"
-            :email="t.email"
-            :profile_image="t.profile_image"
-            :created="t.created_at"
-            :tweet="t.tweet"
-            :like="t.like"
-            :like_count="t.like_count"
-            :uploads="t.uploads"
-            @update:like="onUpdatelike(i)"
-            @delete="onDeletePost(i)"
-          />
-        </q-list>
+
+        <q-inner-loading
+          :showing="isLoading"
+          color="primary"
+          style="height: 250px;"
+        />
       </q-card>
     </div>
 
@@ -60,13 +66,15 @@ export default {
   components: { AddPostCard, PostCard, RightSideBar },
   setup() {
     const postListArr = ref([]);
+    const isLoading = ref(false);
 
     function getTimeline() {
+      isLoading.value = true;
       const user = Cookies.get('user');
       const params = {
         user_id: user.id,
-        keyword: ''
-,      }
+        keyword: '',
+      }
       api.get('/timeline', { params }).then((res) => {
         postListArr.value = res.data.timeline;
         postListArr.value.forEach((t) => {
@@ -77,6 +85,8 @@ export default {
         })
       }).catch((err) => {
         console.log(err);
+      }).finally(() => {
+        isLoading.value = false;
       });
     }
 
@@ -115,6 +125,7 @@ export default {
 
     return {
       postListArr,
+      isLoading,
 
       onUpdatelike,
       onDeletePost,

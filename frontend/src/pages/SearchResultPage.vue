@@ -26,16 +26,14 @@
       </div>
 
       <q-card flat class="search-result-card-container">
-        <q-card-section v-if="!postListArr.length" class="no-data">
-          <div>
-            <div class="title">No results for "{{ keyword }}"</div>
-            <div class="desc text-grey-8">
-              Try searching for something else, or check your Search settings to see if they’re protecting you from potentially sensitive content.
-            </div>
+        <div v-if="!postListArr.length && !isLoading" class="no-data">
+          <div class="title">No results for "{{ keyword }}"</div>
+          <div class="desc text-grey-8">
+            Try searching for something else, or check your Search settings to see if they’re protecting you from potentially sensitive content.
           </div>
-        </q-card-section>
+        </div>
 
-        <q-list v-else>
+        <q-list>
           <PostCard
             v-for="(t, i) in postListArr"
             :key="t.id"
@@ -54,6 +52,12 @@
             @delete="onDeletePost(i)"
           />
         </q-list>
+
+        <q-inner-loading
+          :showing="isLoading"
+          color="primary"
+          style="height: 250px;"
+        />
       </q-card>
     </div>
 
@@ -82,12 +86,14 @@ export default {
   name: "SearchResultPage",
   components: { SearchForm, PostCard, RightSideBar },
   setup() {
+    const isLoading = ref(false);
     const route = useRoute();
     const user = Cookies.get('user');
-    console.log(user)
     const tab = ref("Top");
 
     const followList = ref([]);
+    const people = ref([]);
+
     function getFollow() {
       followList.value = [];
       api
@@ -106,16 +112,15 @@ export default {
               }
             });
           });
-          Loading.hide();
         });
     }
 
     const keyword = ref("");
-    const people = ref([]);
 
     const postListArr = ref([]);
     function onSearch(val) {
       if (val) {
+        isLoading.value = true;
         const params = {
           user_id: user.id,
           keyword: val,
@@ -135,6 +140,9 @@ export default {
           })
           .catch((err) => {
             console.log(err);
+          })
+          .finally(() => {
+            isLoading.value = false;
           });
       }
     }
@@ -170,7 +178,7 @@ export default {
 
     return {
       tabOptions,
-
+      isLoading,
       tab,
       followList,
       keyword,

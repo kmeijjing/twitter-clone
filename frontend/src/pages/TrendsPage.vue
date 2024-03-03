@@ -3,7 +3,7 @@
     <div class="left-part full-width">
       <q-card class="page-header flex items-center justify-between full-width" flat>
         <q-card-section class="q-pa-none flex items-center">
-          <q-btn flat dense round :ripple="false" icon="arrow_back" @click="router.go(-1)" class="q-mr-md"></q-btn>
+          <q-btn flat dense round :ripple="false" icon="arrow_back" @click="$router.go(-1)" class="q-mr-md"></q-btn>
           <strong>Trends</strong>
         </q-card-section>
 
@@ -18,6 +18,11 @@
             :keyword="k"
           />
         </q-list>
+        <q-inner-loading
+          :showing="isLoading"
+          color="primary"
+          style="height: 250px;"
+        />
       </q-card>
     </div>
 
@@ -31,9 +36,6 @@ import { useRouter } from 'vue-router';
 import { api } from "@boot/axios";
 import TrendsListItem from '@components/TrendsListItem.vue';
 import RightSideBar from 'src/layouts/RightSideBar.vue';
-// import RandomFollowComponent from "@components/common/RandomFollowComponent.vue";
-
-
 
 export default {
   name: 'TrendsPage',
@@ -41,13 +43,16 @@ export default {
   setup() {
     const router = useRouter();
     const keywords = ref([]);
+    const isLoading = ref(false);
 
     function getTrendList() {
+      isLoading.value = true;
       api.get('/trend').then((res) => {
         keywords.value = res.data.body;
       }).catch((err) => {
         console.log(err);
       }).finally(() => {
+        isLoading.value = false;
       })
     }
 
@@ -70,7 +75,7 @@ export default {
     })
 
     return {
-      router,
+      isLoading,
       keywords,
       searchVal,
       goSearch,

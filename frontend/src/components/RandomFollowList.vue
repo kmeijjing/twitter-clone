@@ -18,6 +18,12 @@
         </q-item-section>
       </q-item>
     </q-list>
+
+    <q-inner-loading
+      :showing="isLoading"
+      color="primary"
+      style="height: 250px;"
+    />
   </q-card>
 </template>
 
@@ -31,14 +37,15 @@ export default {
   name: "RandomFollowList",
   components: { RandomFollowListItem },
   setup () {
+    const isLoading = ref(false);
     const user = Cookies.get('user');
     const randomUsers = ref([]);
 
     function getUserRandom() {
+      isLoading.value = true;
       api
         .get(`/random-users/${user.id}`)
         .then((res) => {
-          console.log(res);
           res.data.forEach((u) => {
             randomUsers.value.push({
               id: u.id,
@@ -50,7 +57,10 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-        });
+        })
+        .finally(() => {
+          isLoading.value = false;
+        })
     }
 
     onBeforeMount(() => {
@@ -58,10 +68,10 @@ export default {
     })
 
     return {
+      isLoading,
       randomUsers,
     }
   }
-
 }
 </script>
 

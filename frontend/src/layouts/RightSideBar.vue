@@ -118,16 +118,15 @@ export default {
       background: $grey-1;
     }
   }
-  // &.right-side-bar--search {
-  //   > .container {
-  //     // top: 60px;
-  //     top: -300px;
-  //   }
-  // }
-  // &.right-side-bar--no-search {
-  //   > .container {
-  //     top: 12px;
-  //   }
-  // }
+  &.right-side-bar--search {
+    > .container {
+      top: 60px;
+    }
+  }
+  &.right-side-bar--no-search {
+    > .container {
+      top: 12px;
+    }
+  }
 }
 </style>

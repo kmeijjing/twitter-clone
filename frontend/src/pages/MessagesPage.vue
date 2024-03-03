@@ -70,8 +70,6 @@
       </q-card>
     </div>
 
-    <q-separator vertical />
-
     <div class="right-section flex flex-center">
       <q-card v-if="!chatPeopleArr.length" flat class="no-messages">
         <div class="title">
@@ -267,6 +265,8 @@ export default defineComponent({
     padding: 0 0 20px;
     min-width: 380px;
     width: 380px;
+    border-right: 1px solid rgb(239, 243, 244);
+    overflow: hidden;
     .message-list {
       .q-list {
         .q-item {

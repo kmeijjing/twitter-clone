@@ -14,6 +14,12 @@
         </q-item-section>
       </q-item>
     </q-list>
+
+    <q-inner-loading
+      :showing="isLoading"
+      color="primary"
+      style="height: 250px;"
+    />
   </q-card>
 </template>
 
@@ -27,13 +33,16 @@ import TrendsListItem from '@components/TrendsListItem.vue';
 export default defineComponent({
   components: { TrendsListItem },
   setup () {
+    const isLoading = ref(false);
     const keywords = ref([]);
     function getTrendList() {
+      isLoading.value = true;
       api.get('/trend').then((res) => {
         keywords.value = res.data.body;
       }).catch((err) => {
         console.log(err);
       }).finally(() => {
+        isLoading.value = false;
       })
     }
 
@@ -43,6 +52,7 @@ export default defineComponent({
 
 
     return {
+      isLoading,
       keywords,
     };
   },

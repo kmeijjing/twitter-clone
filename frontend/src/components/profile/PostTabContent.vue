@@ -18,6 +18,11 @@
         @delete:post="onDeletePost(i)"
         @update:like="onUpdatelike(i)"
       />
+      <q-inner-loading
+        :showing="isLoading"
+        color="primary"
+        style="height: 250px;"
+      />
     </q-list>
     <RandomFollowList />
   </div>
@@ -35,8 +40,10 @@ export default {
   name: "PostTabContent",
   components: { PostCard, RandomFollowList },
   setup() {
+    const isLoading = ref(false);
     const postListArr = ref([]);
     function getPostList() {
+      isLoading.value = true;
       const user = Cookies.get('user');
       api.get(`/my-timeline/${user.id}`).then((res) => {
         postListArr.value = res.data.timeline.reverse();
@@ -48,6 +55,8 @@ export default {
         })
       }).catch((err) => {
         console.log(err);
+      }).finally(() => {
+        isLoading.value = false;
       });
     }
 
@@ -77,6 +86,7 @@ export default {
     })
 
     return {
+      isLoading,
       postListArr,
       onUpdatelike,
       onDeletePost,
